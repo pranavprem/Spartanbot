@@ -1,0 +1,8 @@
+{
+  "name": "SpartanBot",
+  "description": "A Slackbot that helps out at SJSU",
+  "image": "heroku/python",
+  "repository": "https://github.com/pranavprem/Spartanbot",
+  "keywords": ["python", "slackbot" ],
+  "addons": []
+}
