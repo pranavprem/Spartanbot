@@ -12,7 +12,7 @@ AT_BOT = "<@" + BOT_ID + ">"
 EXAMPLE_COMMAND = "do"
 
 # instantiate Slack & Twilio clients
-slack_client = SlackClient("xoxb-158482568483-15wPBof8wMocvKKE8hqzFebv")
+slack_client = SlackClient(os.environ["slacktoken"])
 
 def operate(thing):
 	if thing[1] == "+":
