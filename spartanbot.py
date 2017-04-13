@@ -14,7 +14,6 @@ EXAMPLE_COMMAND = "do"
 # instantiate Slack & Twilio clients
 slack_client = SlackClient(os.environ["slacktoken"])
 
-
 def operate(thing):
 	if thing[1] == "+":
 		return "result is %d"%(int(thing[0])+int(thing[2]))
