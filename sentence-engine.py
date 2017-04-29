@@ -11,9 +11,10 @@ class sentence_engine(object):
 
     def analyze(self, sentence):
         ret_dict={}
+        lowercase_sen = sentence.lower()
         pre_keywords = self.dbclient.get_keywords()
         keywords = []
-        for word in sentence.split(" "):
+        for word in lowercase_sen.split(" "):
             if word in pre_keywords:
                 keywords.append(word)
                 keywords.append(self.dictionary.synonym(word))
