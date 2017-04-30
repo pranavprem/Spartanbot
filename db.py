@@ -6,28 +6,49 @@ import os
 
 
 class spartandb(object):
-    
     def __init__(self):
         self.client = MongoClient(os.environ["MONGODB_URI"])
-        self.db = self.client.SpartanData     
+        self.db = self.client.SpartanData
+
     def insert(self,data):
         self.db.greensheet.insert_one(data)
+
     def read(self):
-        ret_obj=[]
+        ret_obj = []
         for obj in self.db.greensheet.find():
             ret_obj.append(obj)
         return ret_obj
-    def insert_subjects(self,data):
-        self.db.subjects.insert_one(data)
+
+    def insert_object(self,keyword):
+        try:
+            key_array = self.db.objects.find().next()
+            key_array["objects"].append(keyword)
+            self.db.objects.save(key_array)
+        except StopIteration:
+            key_array = []
+            key_array.append(keyword)
+            self.db.objects.insert_one({"objects":key_array})
+
+
+    def insert_subject(self,keyword):
+        try:
+            key_array = self.db.subjects.find().next()
+            key_array["subjects"].append(keyword)
+            self.db.subjects.save(key_array)
+        except StopIteration:
+            key_array = []
+            key_array.append(keyword)
+            self.db.subjects.insert_one({"subjects":key_array})
+
+
     def get_subjects(self):
-        ret_sub = []
-        for sub in self.db.greensheet.find():
-            ret_sub.append(sub)
-        return ret_sub
-    def insert_objects(self,data):
-        self.db.obj.insert_one(data)
+        keywords = []
+        for obj in self.db.subjects.find():
+            keywords = obj["subjects"]
+        return keywords
+
     def get_objects(self):
-        ret_ob=[]
-        for ob in self.db.greensheet.find():
-            ret_ob.append(ob)
-        return ret_ob
+        keywords = []
+        for obj in self.db.objects.find():
+            keywords = obj["objects"]
+        return keywords
