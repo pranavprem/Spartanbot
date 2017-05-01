@@ -1,25 +1,21 @@
-import db-collection
+import db_collection
 from docx import Document
 from docx.shared import Inches
+import os
 
-class read_file(object):
+class learner(object):
 
 	def __init__(self):
-		self.document = Document("/cmpe273-greensheet.docx")
-		self.i = 0
-		self.insert = db-collection.create_collection()
-		
-	def read():
+		self.document = Document(os.path.join(os.getcwd(),"cmpe273-greensheet.docx"))
+		self.insert = db_collection.db_collection()
+
+	def read(self):
 		for table in self.document.tables:
-			self.i = 0
-			while(self.i < len(table.rows)):
-				self.insert.insertCollection("%s for %s is %s" % (table.cell(i,0).text.encode('utf-8'), table.cell(i,1).text.encode('utf-8'), table.cell(i,2).text.encode('utf-8')))
-				self.i = self.i + 1
-		
+			i = 0
+			while(i < len(table.rows)):
+				self.insert.insertCollection("%s for %s is %s" % (table.cell(i, 0).text.encode('utf-8'),
+				 table.cell(i, 1).text.encode('utf-8'), table.cell(i, 2).text.encode('utf-8'))+"\n")
+				i = i + 1
+
 		for paragraph in self.document.paragraphs:
-			if (paragraph.text.startswith(":")):
-				self.insert.insertCollection(paragraph.text.encode('utf-8').replace(":", ""))
-			elif (" ** " in paragraph.text):
-				self.insert.insertCollection(paragraph.text.encode('utf-8').replace("**", "is"))
-			else :
-				self.insert.insertCollection(paragraph.text.encode('utf-8'))
+			self.insert.insertCollection(paragraph.text.encode('utf-8')+"\n")
