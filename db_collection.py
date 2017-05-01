@@ -1,11 +1,11 @@
-import sentence-engine
+import sentence_engine
 import db
 
-class create_collection(object):
+class db_collection(object):
 
 	def __init__(self):
 		self.dbclient = db.spartandb()
-		self.engine = sentence-engine.sentence_engine()
+		self.engine = sentence_engine.sentence_engine()
 
 	def insertCollection(self, sentence):
 		ret_dict = {}
