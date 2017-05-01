@@ -15,6 +15,7 @@ class sentence_engine(object):
         pre_subjects = self.dbclient.get_subjects()
         pre_objects = self.dbclient.get_objects()
         keywords = []
+        
         for word in lowercase_sen.split(" "):
             if word in pre_subjects:
                 keywords.append(word)
