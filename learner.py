@@ -14,8 +14,8 @@ class learner(object):
 			i = 0
 			while(i < len(table.rows)):
 				self.insert.insertCollection("%s for %s is %s" % (table.cell(i, 0).text.encode('utf-8'),
-				 table.cell(i, 1).text.encode('utf-8'), table.cell(i, 2).text.encode('utf-8'))+"\n")
+				 table.cell(i, 1).text.encode('utf-8'), table.cell(i, 2).text.encode('utf-8')))
 				i = i + 1
 
 		for paragraph in self.document.paragraphs:
-			self.insert.insertCollection(paragraph.text.encode('utf-8')+"\n")
+			self.insert.insertCollection(paragraph.text.encode('utf-8'))
