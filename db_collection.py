@@ -9,5 +9,5 @@ class db_collection(object):
 
 	def insertCollection(self, sentence):
 		ret_dict = {}
-		ret_dict = self.engine.analyze(sentence)		
+		ret_dict = self.engine.analyze(sentence)
 		self.dbclient.insert(ret_dict)

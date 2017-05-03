@@ -1,1 +1,1 @@
-web: python spartanbot.py
+web: python learn.py

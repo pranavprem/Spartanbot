@@ -7,10 +7,10 @@ class sentence_engine(object):
     def __init__(self):
         self.dbclient = db.spartandb()
         self.dictionary = PyDictionary()
-        
+
 
     def analyze(self, sentence):
-        ret_dict={}
+        ret_dict = {}
         lowercase_sen = sentence.lower()
         pre_subjects = self.dbclient.get_subjects()
         pre_objects = self.dbclient.get_objects()
@@ -24,9 +24,8 @@ class sentence_engine(object):
                 if self.dictionary.synonym(word):
                     for synonyms in self.dictionary.synonym(word):
                         keywords.append(synonyms.lower())
-                
-            
+
         ret_dict["keywords"] = keywords
         ret_dict["sentence"] = sentence
-        return ret_dict 
+        return ret_dict
                         
