@@ -9,7 +9,7 @@ class google_solution(object):
     def google_search(self, search_term, **kwargs):
         service = build("customsearch", "v1", developerKey=self.my_api_key)
         res = service.cse().list(q=search_term, cx=self.my_cse_id, **kwargs).execute()
-        if "itesms" in res:
-            return res['items']
+        if "items" in res:
+            return res["items"]
         else:
             return []
