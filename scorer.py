@@ -46,6 +46,8 @@ class analyzer(object):
         
         threshold = maximum-((maximum-minimum)/4)
         
+        matches = sorted(matches, key = lambda k: k["confidence"])
+
         for match in matches:
             print match
             if match["confidence"]>=threshold:
