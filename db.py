@@ -8,11 +8,16 @@ import os
 class spartandb(object):
     def __init__(self):
         self.client = MongoClient(os.environ["MONGODB_URI"])
-
-        self.db = self.client.SpartanData
+        self.db = self.client.heroku_jrt9gnq3
 
     def insert(self,data):
         self.db.greensheet.insert_one(data)
+
+    def read(self):
+        ret_obj = []
+        for obj in self.db.greensheet.find():
+            ret_obj.append(obj)
+        return ret_obj
 
 
     def insert_object(self,keyword):
