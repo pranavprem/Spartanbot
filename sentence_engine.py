@@ -16,12 +16,14 @@ class sentence_engine(object):
         pre_objects = self.dbclient.get_objects()
         keywords = []
 
-        for word in lowercase_sen.split(" "):
-            if word in pre_subjects:
-                keywords.append(word)
-            if word in pre_objects:
-                keywords.append(word)
-                if self.dictionary.synonym(word):
+        for word in pre_subjects:
+            if word.lower() in lowercase_sen:
+                keywords.append(word.lower())
+
+        for word in pre_objects:
+            if word.lower() in lowercase_sen:
+                keywords.append(word.lower())
+                if self.dictionary.synonym(word) is not None:
                     for synonyms in self.dictionary.synonym(word):
                         keywords.append(synonyms.lower())
                 
