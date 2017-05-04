@@ -1,1 +1,1 @@
-web: python spartanbot.py
+worker: python spartanbot.py

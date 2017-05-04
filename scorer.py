@@ -16,6 +16,7 @@ class analyzer(object):
             #print element+'---'
             #print (element in list2)
             if element in list2:
+                print element
                 score = score +1.0
         if len(list1) == 0 or len(list2)==0:
             return 0
@@ -27,6 +28,7 @@ class analyzer(object):
 
     def analyze(self, obj):
         #print "reached here"
+        
         greensheet = self.dbclient.read()
         response = ""
         matches = []
@@ -46,7 +48,8 @@ class analyzer(object):
         
         threshold = maximum-((maximum-minimum)/4)
         
-        matches = sorted(matches, key = lambda k: k["confidence"])
+
+        matches = sorted(matches, key = lambda k: k["confidence"], reverse=True)
 
         for match in matches:
             print match
@@ -54,7 +57,7 @@ class analyzer(object):
                 response = response+"\n"+match["sentence"]
 
         return response
-        
+
 
 
 
