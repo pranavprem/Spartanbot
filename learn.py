@@ -3,7 +3,8 @@ from PyDictionary import PyDictionary
 from learner import learner
 
 read_file = open("subjects.txt","r")
-keywords = read_file.read().split(", ")
+keywords = read_file.read().split(",")
+keywords = list(set(keywords))
 dbclient = spartandb()
 dictionary = PyDictionary()
 for keyword in keywords:
@@ -11,7 +12,8 @@ for keyword in keywords:
 read_file.close()
 
 read_file = open("objects.txt","r")
-keywords = read_file.read().split(", ")
+keywords = read_file.read().split(",")
+keywords = list(set(keywords))
 dbclient = spartandb()
 dictionary = PyDictionary()
 for keyword in keywords:
@@ -24,4 +26,4 @@ for keyword in keywords:
 learner_mod = learner()
 learner_mod.read()
 
-#print dbclient.get_keywords()   
+#print dbclient.get_keywords()

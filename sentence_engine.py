@@ -1,5 +1,8 @@
 import db
 from PyDictionary import PyDictionary
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
 
 
 class sentence_engine(object):
@@ -7,11 +10,14 @@ class sentence_engine(object):
     def __init__(self):
         self.dbclient = db.spartandb()
         self.dictionary = PyDictionary()
+        self.lemmatizer = WordNetLemmatizer()
 
 
     def analyze(self, sentence):
         ret_dict = {}
         lowercase_sen = sentence.lower()
+        lowercase_sen_tok = [word.lower() for word in word_tokenize(lowercase_sen)]
+        lowercase_sen_lem = [self.lemmatizer.lemmatize(word) for word in lowercase_sen_tok]
         pre_subjects = self.dbclient.get_subjects()
         pre_objects = self.dbclient.get_objects()
         keywords = []
@@ -20,14 +26,13 @@ class sentence_engine(object):
             if word.lower() in lowercase_sen:
                 keywords.append(word.lower())
 
-        for word in pre_objects:
-            if word.lower() in lowercase_sen:
+        for word in lowercase_sen_lem:
+            if word.lower() in pre_objects:
                 keywords.append(word.lower())
                 if self.dictionary.synonym(word) is not None:
                     for synonyms in self.dictionary.synonym(word):
                         keywords.append(synonyms.lower())
 
-        ret_dict["keywords"] = keywords
+        ret_dict["keywords"] = list(set(keywords))
         ret_dict["sentence"] = sentence
         return ret_dict
-                        

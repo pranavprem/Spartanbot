@@ -5,3 +5,4 @@ PyDictionary==1.5.2
 python-docx==0.8.6
 requests==2.13.0
 watson-developer-cloud==0.25.2
+nltk==3.2.2

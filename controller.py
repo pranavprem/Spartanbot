@@ -29,11 +29,8 @@ class controller(object):
                 if command.startswith("do"):
                     response = self.calculation.calculate(command)
                 else:
-                    response = "CUSTOM SOLUTION :: \n" +self.custom_sol.doCustom(command) + "\n"
-                    response = response + "NLC SOLUTIOM :: \n" + self.nlc_mod.classify(command) +"\n"
-                if response == "":
-                    response = "Sorry, I was not able to find any information but this might help:\n"
-                else:
+                    response = "CUSTOM SOLUTION :: " +self.custom_sol.doCustom(command) + "\n"
+                    response = response + "NLC SOLUTION :: \n" + self.nlc_mod.classify(command) +"\n"
                     response = response + "Additionally, this might help:\n"
                 for hit in self.google_sol.google_search(command, num=5):
                     response = response + hit["formattedUrl"]+"\n"+hit["snippet"]+"\n"
