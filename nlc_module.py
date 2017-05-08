@@ -12,5 +12,8 @@ class nlc_module(object):
             username=os.environ["bluemix_username"], password=os.environ["bluemix_password"])
 
     def classify(self, sentence):
-        classes = self.natural_language_classifier.classify('90e7b4x199-nlc-49477', sentence)
-        return json.dumps(classes["top_class"], indent=2)
+        classes = self.natural_language_classifier.classify('90e7acx197-nlc-50390', sentence)
+        if classes["classes"][0]["confidence"] >= 0.75:
+            return json.dumps(classes["top_class"], indent=2)
+        else :
+            return ""
