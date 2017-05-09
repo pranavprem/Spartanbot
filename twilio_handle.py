@@ -6,12 +6,12 @@ from slackclient import SlackClient
 
 
 twilio_number = os.environ.get("twilio_number")
-accept_number = os.environ.get("accepted_numbers")
+accept_number = os.environ.get("user_number")
 app = Flask(__name__)
 twilio_client = TwilioRestClient()
 slack_client = SlackClient(os.environ.get("twilio_slack_token", None))
  
-@app.route("/", methods=['POST'])
+@app.route("/twilio", methods=['POST'])
 def post_to_slack():
     print "hit flask" + request.form['Body']
     # response = twiml.Response()
