@@ -6,3 +6,5 @@ python-docx==0.8.6
 requests==2.13.0
 watson-developer-cloud==0.25.2
 nltk==3.2.2
+twilio==5.6.0
+Flask==0.12
