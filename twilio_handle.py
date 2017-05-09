@@ -4,7 +4,7 @@ from flask import Flask, request
 # from twilio.rest import TwilioRestClient
 from slackclient import SlackClient
 
-
+AT_BOT = "<@" + os.environ["bot_id"] + ">"
 twilio_number = os.environ.get("twilio_number")
 accept_number = os.environ.get("user_number")
 app = Flask(__name__)
@@ -19,7 +19,7 @@ def post_to_slack():
         message = request.form['Body']
         slack_client.api_call("chat.postMessage",
                               channel="#testonebotchanel",
-                              text=message, as_user=True)
+                              text=AT_BOT +" "+ message, as_user=True)
     # return Response(response.toxml(), mimetype="text/xml"), 200
     return '', 200
 
