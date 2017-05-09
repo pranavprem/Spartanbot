@@ -13,6 +13,7 @@ slack_client = SlackClient(os.environ.get("twilio_slack_token", None))
  
 @app.route("/", methods=['POST'])
 def post_to_slack():
+    print "hit flask" + request.form['Body']
     # response = twiml.Response()
     if request.form['From'] in accept_number:
         message = request.form['Body']
