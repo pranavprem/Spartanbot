@@ -30,7 +30,9 @@ class controller(object):
                     response = self.calculation.calculate(command)
                 else:
                     response = "CUSTOM SOLUTION :: " +self.custom_sol.doCustom(command) + "\n"
-                    response = response + "NLC SOLUTION :: \n" + self.nlc_mod.classify(command) +"\n"
+                    nlc_response = self.nlc_mod.classify(command)
+                    if nlc_response != "":
+                        response = response + "NLC SOLUTION :: \n" + nlc_response +"\n"
                     response = response + "Additionally, this might help:\n"
                 for hit in self.google_sol.google_search(command, num=5):
                     response = response + hit["formattedUrl"]+"\n"+hit["snippet"]+"\n"
