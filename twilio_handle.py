@@ -9,7 +9,7 @@ twilio_number = os.environ.get("twilio_number")
 accept_number = os.environ.get("user_number")
 app = Flask(__name__)
 # twilio_client = TwilioRestClient()
-slack_client = SlackClient(os.environ.get("twilio_slack_token", None))
+slack_client = SlackClient(os.environ.get("slacktoken", None))
  
 @app.route("/twilio", methods=['POST'])
 def post_to_slack():
@@ -21,8 +21,9 @@ def post_to_slack():
                               channel="#testonebotchanel",
                               text=message, as_user=True)
     # return Response(response.toxml(), mimetype="text/xml"), 200
+    return '', 200
 
 
 if __name__ == "__main__":
-    heroku_port = int(os.environ.get("PORT", 5000))
+    heroku_port = int(os.environ.get("PORT", 6000))
     app.run(host='0.0.0.0', port=heroku_port)
