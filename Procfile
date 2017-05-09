@@ -1,1 +1,1 @@
-worker: python learn.py
+worker: python spartanbot.py
