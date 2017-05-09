@@ -1,6 +1,6 @@
 import os
-from flask import Flask, request, Response
-from twilio import twiml
+from flask import Flask, request
+# from twilio import twiml
 from twilio.rest import TwilioRestClient
 from slackclient import SlackClient
 
