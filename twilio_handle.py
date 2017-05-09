@@ -1,14 +1,14 @@
 import os
 from flask import Flask, request
 # from twilio import twiml
-from twilio.rest import TwilioRestClient
+# from twilio.rest import TwilioRestClient
 from slackclient import SlackClient
 
 
 twilio_number = os.environ.get("twilio_number")
 accept_number = os.environ.get("user_number")
 app = Flask(__name__)
-twilio_client = TwilioRestClient()
+# twilio_client = TwilioRestClient()
 slack_client = SlackClient(os.environ.get("twilio_slack_token", None))
  
 @app.route("/twilio", methods=['POST'])
