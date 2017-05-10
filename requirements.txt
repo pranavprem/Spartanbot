@@ -8,3 +8,4 @@ watson-developer-cloud==0.25.2
 nltk==3.2.2
 twilio==5.6.0
 Flask==0.12
+ChatterBot==0.6.0

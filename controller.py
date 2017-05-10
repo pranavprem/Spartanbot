@@ -3,6 +3,7 @@ from custom_solution import custom_solution
 from google_solution import google_solution
 from nlc_module import nlc_module
 from db_collection import db_collection
+from chatbot_solutions import chatbot_solutions
 
 class controller(object):
     def __init__(self):
@@ -12,6 +13,7 @@ class controller(object):
         self.google_sol = google_solution()
         self.nlc_mod = nlc_module()
         self.collection = db_collection()
+        self.chatterbot = chatbot_solutions()
 
     def find_solution(self, command):
         response = ""
@@ -26,6 +28,9 @@ class controller(object):
                 self.db_mode_flag = True
                 response = "Please enter what you consider a valid response"
             else:
+                response = self.chatterbot.chatbot_response(command)
+                if response != "":
+                    return response
                 if command.startswith("do"):
                     response = self.calculation.calculate(command)
                 else:
