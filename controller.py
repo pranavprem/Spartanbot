@@ -28,7 +28,7 @@ class controller(object):
                 self.db_mode_flag = True
                 response = "Please enter what you consider a valid response"
             else:
-                response = self.chatterbot.chatbot_response(command)
+                response = str(self.chatterbot.chatbot_response(command))
                 if response != "":
                     return response
                 if command.startswith("do"):
