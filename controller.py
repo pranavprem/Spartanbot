@@ -40,8 +40,9 @@ class controller(object):
                     if nlc_response != "":
                         response = response + "NLC SOLUTION :: \n" + nlc_response +"\n"
                     response = response + "Additionally, this might help:\n"
-                for hit in self.google_sol.google_search(command, num=0):
+                """for hit in self.google_sol.google_search(command, num=1):
                     response = response + hit["formattedUrl"]+"\n"+hit["snippet"]+"\n"
+		"""
         if self.db_mode_flag is False and response != "I'll remember that":
             response = response + "Are you satisfied with that response?"
         return response
