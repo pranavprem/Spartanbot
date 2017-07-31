@@ -32,7 +32,7 @@ def post_to_slack():
 @app.route("/alexa_endpoint/<question>", methods=['GET'])
 def return_to_alexa(question):
     print "hit flask" + question.replace("_", " ")
-    return "{ 'answer':'"+control.find_solution(question.replace("_", " ")).replace("\n"," ")+"'}"
+    return control.find_solution(question.replace("_", " ")).replace("\n"," ")
 
 
 if __name__ == "__main__":
