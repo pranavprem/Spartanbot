@@ -3,6 +3,7 @@ from flask import Flask, request
 # from twilio import twiml
 #from twilio.rest import TwilioRestClient
 from slackclient import SlackClient
+from controller import controller
 
 control = controller()
 
