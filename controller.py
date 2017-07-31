@@ -1,7 +1,7 @@
 from calculator import calculator
 from custom_solution import custom_solution
 from google_solution import google_solution
-from nlc_module import nlc_module
+#from nlc_module import nlc_module
 from db_collection import db_collection
 from chatbot_solutions import chatbot_solutions
 
@@ -11,7 +11,7 @@ class controller(object):
         self.calculation = calculator()
         self.custom_sol = custom_solution()
         self.google_sol = google_solution()
-        self.nlc_mod = nlc_module()
+        #self.nlc_mod = nlc_module()
         self.collection = db_collection()
         self.chatterbot = chatbot_solutions()
 
@@ -35,7 +35,8 @@ class controller(object):
                     response = self.calculation.calculate(command)
                 else:
                     response = "CUSTOM SOLUTION :: " +self.custom_sol.doCustom(command) + "\n"
-                    nlc_response = self.nlc_mod.classify(command)
+                    #nlc_response = self.nlc_mod.classify(command)
+                    nlc_response = ""
                     if nlc_response != "":
                         response = response + "NLC SOLUTION :: \n" + nlc_response +"\n"
                     response = response + "Additionally, this might help:\n"
