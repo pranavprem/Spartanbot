@@ -31,11 +31,8 @@ def post_to_slack():
 
 @app.route("/alexa_endpoint/<question>", methods=['GET'])
 def return_to_alexa(question):
-    print "hit flask" + request.form['Body']
-    # response = twiml.Response()
-        #twilio_client.messages.create(to=accept_number, from_=twilio_number,body="response")
-    # return Response(response.toxml(), mimetype="text/xml"), 200
-    return control.find_solution(question.replace("_", " "))
+    print "hit flask" + question.replace("_", " ")
+    return "{ 'response':'"+control.find_solution(question.replace("_", " "))+"'}"
 
 
 if __name__ == "__main__":
