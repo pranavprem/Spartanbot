@@ -4,6 +4,8 @@ from flask import Flask, request
 #from twilio.rest import TwilioRestClient
 from slackclient import SlackClient
 
+control = controller()
+
 AT_BOT = "<@" + os.environ["bot_id"] + ">"
 twilio_number = os.environ.get("twilio_number")
 accept_number = os.environ.get("user_number")
@@ -23,6 +25,17 @@ def post_to_slack():
         #twilio_client.messages.create(to=accept_number, from_=twilio_number,body="response")
     # return Response(response.toxml(), mimetype="text/xml"), 200
     return '', 200
+
+
+
+@app.route("/alexa_endpoint/<question>", methods=['POST'])
+def return_to_alexa(question):
+    print "hit flask" + request.form['Body']
+    # response = twiml.Response()
+    
+        #twilio_client.messages.create(to=accept_number, from_=twilio_number,body="response")
+    # return Response(response.toxml(), mimetype="text/xml"), 200
+    return control.find_solution(question)
 
 
 if __name__ == "__main__":
