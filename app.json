@@ -1,8 +1,14 @@
 {
   "name": "SpartanBot",
-  "description": "A Slackbot that helps out at SJSU",
+  "description": "A Slack bot that answers questions about the SJSU CMPE 273 greensheet",
   "image": "heroku/python",
   "repository": "https://github.com/pranavprem/Spartanbot",
-  "keywords": ["python", "slackbot" ],
-  "addons": []
+  "keywords": ["python", "slackbot", "sjsu"],
+  "env": {
+    "SLACK_BOT_TOKEN": {"required": false},
+    "SLACK_APP_TOKEN": {"required": false},
+    "SLACK_BOT_ID": {"required": false},
+    "MONGODB_URI": {"required": false},
+    "user_number": {"required": false}
+  }
 }

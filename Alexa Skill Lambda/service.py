@@ -1,201 +1,170 @@
+"""Alexa skill that asks the Spartanbot HTTP endpoint a course question.
+
+Adapted from Amazon's color-picker sample. The skill calls
+``/alexa_endpoint/<question>`` and speaks the plain-text body. The 2017
+deployment used pycurl against a Heroku app. The URL is
+``ALEXA_BACKEND_URL`` and defaults to that Heroku host, which is almost
+certainly gone; point it at a running ``twilio_handle.py`` to use the skill.
 """
-This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
-The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well
-as testing instructions are located at http://amzn.to/1LzFrj6
 
-For additional samples, visit the Alexa Skills Kit Getting Started guide at
-http://amzn.to/1LGWsLG
-"""
+import json
+import os
+from urllib.error import URLError
+from urllib.parse import quote
+from urllib.request import urlopen
 
-from __future__ import print_function
-from StringIO import StringIO
-import pycurl
+DEFAULT_BACKEND = "https://shrouded-ocean-49421.herokuapp.com/alexa_endpoint/"
 
-# --------------- Helpers that build all of the responses ----------------------
 
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
     return {
-        'outputSpeech': {
-            'type': 'PlainText',
-            'text': output
+        "outputSpeech": {
+            "type": "PlainText",
+            "text": output,
         },
-        'card': {
-            'type': 'Simple',
-            'title': "SessionSpeechlet - " + title,
-            'content': "SessionSpeechlet - " + output
+        "card": {
+            "type": "Simple",
+            "title": "SessionSpeechlet - " + title,
+            "content": "SessionSpeechlet - " + output,
         },
-        'reprompt': {
-            'outputSpeech': {
-                'type': 'PlainText',
-                'text': reprompt_text
-            }
+        "reprompt": {
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": reprompt_text,
+            },
         },
-        'shouldEndSession': should_end_session
+        "shouldEndSession": should_end_session,
     }
 
 
 def build_response(session_attributes, speechlet_response):
     return {
-        'version': '1.0',
-        'sessionAttributes': session_attributes,
-        'response': speechlet_response
+        "version": "1.0",
+        "sessionAttributes": session_attributes,
+        "response": speechlet_response,
     }
 
 
-# --------------- Functions that control the skill's behavior ------------------
-
 def get_welcome_response():
-    """ If we wanted to initialize the session to have some attributes we could
-    add those here
-    """
-
     session_attributes = {}
     card_title = "Welcome"
     speech_output = "Yo"
-    # If the user either does not reply to the welcome message or says something
-    # that is not understood, they will be prompted again with this text.
     reprompt_text = "Ask me a question about 273 class"
     should_end_session = False
-    return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(
+        session_attributes,
+        build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session),
+    )
 
 
 def handle_session_end_request():
     card_title = "Session Ended"
     speech_output = "Have a nice day! "
-    # Setting this to true ends the session and exits the skill.
     should_end_session = True
-    return build_response({}, build_speechlet_response(
-        card_title, speech_output, None, should_end_session))
+    return build_response(
+        {},
+        build_speechlet_response(card_title, speech_output, None, should_end_session),
+    )
 
 
-def create_favorite_color_attributes(favorite_color):
-    return {"favoriteColor": favorite_color}
+def backend_url():
+    return os.environ.get("ALEXA_BACKEND_URL", DEFAULT_BACKEND)
+
+
+def fetch_answer(question, opener=None):
+    opener = opener or urlopen
+    slug = quote(question.replace(" ", "_"), safe="")
+    url = backend_url().rstrip("/") + "/" + slug
+    with opener(url, timeout=8) as response:
+        payload = response.read()
+    return payload.decode("utf-8", "replace")
 
 
 def set_color_in_session(intent, session):
-    """ gets response by curling the heroku instance
-    """
-
-    
-
-    if 'Question' in intent['slots']:
-        url = "https://shrouded-ocean-49421.herokuapp.com/alexa_endpoint/"+intent['slots']['Question']['value'].replace(" ","_");
-        storage = StringIO()
-        c = pycurl.Curl()
-        c.setopt(c.URL, url)
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        c.close()
-        content = storage.getvalue()
-        speech_output = content
-        reprompt_text = "Ask a question starting with ask the bot"
-        card_title = intent['name']
-        session_attributes = {}
-        should_end_session = False
+    """Fetch the course answer. The name is kept from the Alexa sample."""
+    card_title = intent.get("name", "QuestionIntent")
+    session_attributes = {}
+    should_end_session = False
+    reprompt_text = "Ask a question starting with ask the bot"
+    slot = intent.get("slots", {}).get("Question", {})
+    question = slot.get("value") if isinstance(slot, dict) else None
+    if question:
+        try:
+            speech_output = fetch_answer(question)
+        except (URLError, TimeoutError, OSError, ValueError) as exc:
+            speech_output = "Sorry, I could not reach the course bot."
+            print("alexa backend unavailable: %s" % exc)
     else:
         speech_output = "Sorry. Didn't catch that."
-        reprompt_text = "Ask a question starting with ask the bot"
-    return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(
+        session_attributes,
+        build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session),
+    )
 
-
-# def get_color_from_session(intent, session):
-#     session_attributes = {}
-#     reprompt_text = None
-
-#     if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
-#         favorite_color = session['attributes']['favoriteColor']
-#         speech_output = "Your favorite color is " + favorite_color + \
-#                         ". Goodbye."
-#         should_end_session = True
-#     else:
-#         speech_output = "I'm not sure what your favorite color is. " \
-#                         "You can say, my favorite color is red."
-#         should_end_session = False
-
-#     # Setting reprompt_text to None signifies that we do not want to reprompt
-#     # the user. If the user does not respond or says something that is not
-#     # understood, the session will end.
-#     return build_response(session_attributes, build_speechlet_response(
-#         intent['name'], speech_output, reprompt_text, should_end_session))
-
-
-# --------------- Events ------------------
 
 def on_session_started(session_started_request, session):
-    """ Called when the session starts """
-
-    print("on_session_started requestId=" + session_started_request['requestId']
-          + ", sessionId=" + session['sessionId'])
+    print(
+        "on_session_started requestId="
+        + session_started_request["requestId"]
+        + ", sessionId="
+        + session["sessionId"]
+    )
 
 
 def on_launch(launch_request, session):
-    """ Called when the user launches the skill without specifying what they
-    want
-    """
-
-    print("on_launch requestId=" + launch_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
-    # Dispatch to your skill's launch
+    print(
+        "on_launch requestId=" + launch_request["requestId"] + ", sessionId=" + session["sessionId"]
+    )
     return get_welcome_response()
 
 
 def on_intent(intent_request, session):
-    """ Called when the user specifies an intent for this skill """
+    print(
+        "on_intent requestId=" + intent_request["requestId"] + ", sessionId=" + session["sessionId"]
+    )
 
-    print("on_intent requestId=" + intent_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
+    intent = intent_request["intent"]
+    intent_name = intent_request["intent"]["name"]
 
-    intent = intent_request['intent']
-    intent_name = intent_request['intent']['name']
-
-    # Dispatch to your skill's intent handlers
     if intent_name == "QuestionIntent":
         return set_color_in_session(intent, session)
-    elif intent_name == "AMAZON.HelpIntent":
+    if intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
-    elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
+    if intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
         return handle_session_end_request()
-    else:
-        raise ValueError("Invalid intent")
+    raise ValueError("Invalid intent")
 
 
 def on_session_ended(session_ended_request, session):
-    """ Called when the user ends the session.
+    print(
+        "on_session_ended requestId="
+        + session_ended_request["requestId"]
+        + ", sessionId="
+        + session["sessionId"]
+    )
 
-    Is not called when the skill returns should_end_session=true
-    """
-    print("on_session_ended requestId=" + session_ended_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
-    # add cleanup logic here
-
-
-# --------------- Main handler ------------------
 
 def handler(event, context):
-    """ Route the incoming request based on type (LaunchRequest, IntentRequest,
-    etc.) The JSON body of the request is provided in the event parameter.
-    """
-    print("event.session.application.applicationId=" +
-          event['session']['application']['applicationId'])
+    """Route a LaunchRequest, IntentRequest, or SessionEndedRequest."""
+    print(
+        "event.session.application.applicationId="
+        + event["session"]["application"]["applicationId"]
+    )
 
-    """
-    Uncomment this if statement and populate with your skill's application ID to
-    prevent someone else from configuring a skill that sends requests to this
-    function.
-    """
-    # if (event['session']['application']['applicationId'] !=
-    #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
-    #     raise ValueError("Invalid Application ID")
+    if event["session"]["new"]:
+        on_session_started({"requestId": event["request"]["requestId"]}, event["session"])
 
-    if event['session']['new']:
-        on_session_started({'requestId': event['request']['requestId']},
-                           event['session'])
+    if event["request"]["type"] == "LaunchRequest":
+        return on_launch(event["request"], event["session"])
+    if event["request"]["type"] == "IntentRequest":
+        return on_intent(event["request"], event["session"])
+    if event["request"]["type"] == "SessionEndedRequest":
+        return on_session_ended(event["request"], event["session"])
+    return None
 
-    if event['request']['type'] == "LaunchRequest":
-        return on_launch(event['request'], event['session'])
-    elif event['request']['type'] == "IntentRequest":
-        return on_intent(event['request'], event['session'])
-    elif event['request']['type'] == "SessionEndedRequest":
-        return on_session_ended(event['request'], event['session'])
+
+if __name__ == "__main__":
+    event_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "event.json")
+    with open(event_path, encoding="utf-8") as handle:
+        event = json.load(handle)
+    print(json.dumps(handler(event, None), indent=2))
