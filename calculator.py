@@ -1,20 +1,30 @@
+"""Tiny arithmetic commands, used to exercise the bot.
+
+The Slack command is ``do 2 + 2``. Operators are +, -, *, and /.
 """
-module does calculator operations. Made in order to test bot.
-"""
+
+
 class calculator(object):
-    def __init__(self):
-        pass
-
-
     def calculate(self, command):
         operation = command.split(" ")[1:]
-        if operation[1] == "+":
-            return "result is %d"%(int(operation[0])+int(operation[2]))
-        elif operation[1] == "-":
-            return "result is %d"%(int(operation[0])-int(operation[2]))
-        elif operation[1] == "*":
-            return "result is %d"%(int(operation[0])*int(operation[2]))
-        elif operation[1] == "/":
-            return "result is %d"%int(int(operation[0])/int(operation[2]))
+        if len(operation) != 3:
+            return "invalid operation"
+        left, operator, right = operation
+        try:
+            first = int(left)
+            second = int(right)
+        except ValueError:
+            return "invalid operation"
+        if operator == "+":
+            result = first + second
+        elif operator == "-":
+            result = first - second
+        elif operator == "*":
+            result = first * second
+        elif operator == "/":
+            if second == 0:
+                return "invalid operation"
+            result = int(first / second)
         else:
             return "invalid operation"
+        return "result is %d" % result

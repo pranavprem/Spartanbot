@@ -1,44 +1,51 @@
-from chatterbot import ChatBot
+"""Small-talk replies trained as one conversation chain.
+
+ChatterBot 0.6 (the 2017 dependency) does not run on Python 3.12. ListTrainer
+stored each line as the reply to the previous line, and LowConfidenceAdapter
+returned an empty string below 0.65 similarity so the greensheet path could
+take over. This module keeps that chain and that threshold, using
+``difflib.SequenceMatcher`` instead of the abandoned library.
+"""
+
+import difflib
+
+CONVERSATION = [
+    "How are you?",
+    "I am good.Thankyou.",
+    "That is good to hear.",
+    "Thank you",
+    "You are welcome.",
+    "Whats your name?",
+    "I have no name.",
+    "Where are you?",
+    "I am in California.",
+    "Hi",
+    "Hello",
+    "Hello",
+]
+
+THRESHOLD = 0.65
+
+
+def training_pairs():
+    return list(zip(CONVERSATION, CONVERSATION[1:]))
 
 
 class chatbot_solutions(object):
-# Create a new instance of a ChatBot
     def __init__(self):
-        self.bot = ChatBot(
-            'Chatbot solutions',
-            storage_adapter='chatterbot.storage.JsonFileStorageAdapter',
-            logic_adapters=[
-            {
-                'import_path': 'chatterbot.logic.BestMatch'
-            },
-            {
-                'import_path': 'chatterbot.logic.LowConfidenceAdapter',
-                'threshold': 0.65,
-                'default_response': ''
-            }
-        ],
-            trainer='chatterbot.trainers.ListTrainer'
-      )      
-    # Train the chat bot with a few responses
-        self.bot.train([
-                'How are you?',
-                'I am good.Thankyou.',
-                'That is good to hear.',
-                'Thank you',
-                'You are welcome.',
-                'Whats your name?',
-                'I have no name.',
-                'Where are you?',
-                'I am in California.',
-                'Hi',
-                'Hello',
-                'Hello',
-        ])
-        
+        self.pairs = training_pairs()
 
-
-# Get a response for some unexpected input
-
-    def chatbot_response(self,sentence):
-        response = self.bot.get_response(sentence)
-        return response
+    def chatbot_response(self, sentence):
+        if not sentence:
+            return ""
+        query = sentence.strip().lower()
+        best_score = 0.0
+        best_response = ""
+        for prompt, response in self.pairs:
+            score = difflib.SequenceMatcher(None, query, prompt.lower()).ratio()
+            if score > best_score:
+                best_score = score
+                best_response = response
+        if best_score >= THRESHOLD:
+            return best_response
+        return ""

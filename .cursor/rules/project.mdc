@@ -1,0 +1,6 @@
+---
+description: Spartanbot conventions for agents working in this repo
+alwaysApply: true
+---
+
+Read AGENTS.md before changing this repo. Do not commit secrets, virtualenvs, bytecode, or nltk corpora. Do not add a license. Watson NLC and Google Custom Search stay optional and must return an empty result when they are unavailable. Do not replace them with a different hosted service.

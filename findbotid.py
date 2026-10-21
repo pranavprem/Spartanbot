@@ -1,19 +1,39 @@
-import os
-from slackclient import SlackClient
+"""Print the Slack user id for the configured bot name.
+
+The 2017 script had a bot token in source. Pass the token with
+``SLACK_BOT_TOKEN`` (or the old ``slacktoken`` name) instead.
+"""
+
+import sys
+
+from settings import setting
 
 
-BOT_NAME = 'testonebot'
+def main():
+    bot_name = setting("SLACK_BOT_NAME", default="testonebot")
+    token = setting("SLACK_BOT_TOKEN", "slacktoken")
+    if not token:
+        print("Set SLACK_BOT_TOKEN (or slacktoken) to look up the bot user id.")
+        return 1
+    from slack_sdk import WebClient
+    from slack_sdk.errors import SlackApiError
 
-slack_client = SlackClient('xoxb-158482568483-SBwFgJ50Vxz92d34X0UzB4Hj')
+    client = WebClient(token=token)
+    try:
+        auth = client.auth_test()
+        print("This token belongs to user id %s (%s)." % (auth.get("user_id"), auth.get("user")))
+        api_call = client.users_list()
+    except SlackApiError as exc:
+        print("could not list users: %s" % exc)
+        return 1
+    members = api_call.get("members", []) if api_call.get("ok") else []
+    for user in members:
+        if user.get("name") == bot_name:
+            print("Bot ID for '" + user["name"] + "' is " + user.get("id"))
+            return 0
+    print("could not find bot user with the name " + bot_name)
+    return 1
 
-print "something"
+
 if __name__ == "__main__":
-    api_call = slack_client.api_call("users.list")
-    if api_call.get('ok'):
-        # retrieve all users so we can find our bot
-        users = api_call.get('members')
-        for user in users:
-            if 'name' in user and user.get('name') == BOT_NAME:
-                print("Bot ID for '" + user['name'] + "' is " + user.get('id'))
-    else:
-        print("could not find bot user with the name " + BOT_NAME)
+    sys.exit(main())

@@ -1,4 +1,16 @@
 {
-  "pi": 3.14,
-  "e": 2.718
+  "session": {
+    "new": true,
+    "sessionId": "session-local",
+    "application": {
+      "applicationId": "amzn1.ask.skill.local"
+    },
+    "user": {
+      "userId": "user-local"
+    }
+  },
+  "request": {
+    "type": "LaunchRequest",
+    "requestId": "req-local"
+  }
 }
