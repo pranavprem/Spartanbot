@@ -133,7 +133,7 @@ Copy [`.env.example`](.env.example) to `.env` if you want local tokens. Real env
 | HTTP | Flask 0.12 | Flask 3.1.3 |
 | Database | MongoDB on mLab via PyMongo 3.4 | PyMongo 4.19, or a local JSON file |
 | Greensheet | `python-docx` 0.8.6 | `python-docx` 1.2.0 |
-| Language | NLTK 3.2.2 and PyDictionary | NLTK 3.10.3 and WordNet |
+| Language | NLTK 3.2.2 and PyDictionary | NLTK 3.10.4 and WordNet |
 | Small talk | ChatterBot 0.6 | The same training chain, similarity 0.65, stdlib `difflib` |
 | Search | Google Custom Search via `google-api-python-client` 1.6.2 | Same API, client 2.201.0, skipped when unconfigured or the call fails |
 | Classifier | Watson NLC on Bluemix | Original endpoint only, and only when credentials are set. Empty string on failure |
